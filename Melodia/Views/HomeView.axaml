@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:v="using:Melodia.Views"
+             x:Class="Melodia.Views.HomeView">
+  <!-- DataContext: HomeViewModel -->
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="0,0,12,8">
+      <TextBlock Text="{Binding StatusMessage}" IsVisible="{Binding HasStatus}"
+                 Foreground="#8E8E8E" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,8" />
+      <Button Classes="flat pill" Content="Try again" Command="{Binding RetryCommand}" IsVisible="{Binding ShowRetry}"
+              HorizontalAlignment="Left" Margin="0,0,0,12" />
+
+      <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,16">
+        <TextBlock Text="Recommended Artists" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+        <Button Grid.Column="1" Classes="flat icon" Width="28" Height="28" Command="{Binding PreviousArtistsCommand}">
+          <Path Data="{StaticResource IconChevronLeft}" Width="18" Height="18" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+        </Button>
+        <Button Grid.Column="2" Classes="flat icon" Width="28" Height="28" Command="{Binding NextArtistsCommand}">
+          <Path Data="{StaticResource IconChevronRight}" Width="18" Height="18" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+        </Button>
+      </Grid>
+
+      <ItemsControl ItemsSource="{Binding VisibleArtists}" Margin="-6,0">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <UniformGrid Rows="1" Columns="4" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Button Classes="flat" Margin="6,0" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch" Command="{Binding OpenCommand}">
+              <Border CornerRadius="10" ClipToBounds="True" Height="124" Background="#222222">
+                <Grid>
+                  <Image Source="{Binding Picture}" Stretch="UniformToFill" />
+                  <Border VerticalAlignment="Bottom" Height="64">
+                    <Border.Background>
+                      <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                        <GradientStop Color="#00000000" Offset="0" />
+                        <GradientStop Color="#D0000000" Offset="1" />
+                      </LinearGradientBrush>
+                    </Border.Background>
+                  </Border>
+                  <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="SemiBold" Foreground="White"
+                             HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                             TextTrimming="CharacterEllipsis" Margin="8,0,8,10" />
+                </Grid>
+              </Border>
+            </Button>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+
+      <TextBlock Text="Top Chart" FontSize="16" FontWeight="SemiBold" Margin="0,30,0,12" />
+      <v:GenreStripView DataContext="{Binding Genres}" />
+      <ItemsControl ItemsSource="{Binding ChartTracks}" />
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

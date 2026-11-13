@@ -1,0 +1,16 @@
+# Build output
+bin/
+obj/
+TestResults/
+
+# Installer build output
+Melodia-Installer/publish/
+Melodia-Installer/output/
+
+# Editors / IDEs
+.vs/
+.vscode/
+*.user
+
+# Archives
+*.zip

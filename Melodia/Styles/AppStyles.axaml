@@ -1,0 +1,211 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Base flat button: our own template so the theme's hover colours never interfere -->
+  <Style Selector="Button.flat">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <ContentPresenter x:Name="Presenter"
+                          Background="{TemplateBinding Background}"
+                          CornerRadius="{TemplateBinding CornerRadius}"
+                          Padding="{TemplateBinding Padding}"
+                          Foreground="{TemplateBinding Foreground}"
+                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                          Content="{TemplateBinding Content}"
+                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <!-- Sidebar items -->
+  <Style Selector="Button.nav">
+    <Setter Property="Foreground" Value="#B9B9B9" />
+    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="Height" Value="38" />
+    <Setter Property="Padding" Value="14,0" />
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+  <Style Selector="Button.nav:pointerover">
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+  <Style Selector="Button.nav:pointerover /template/ ContentPresenter#Presenter">
+    <Setter Property="Background" Value="#1F1F1F" />
+  </Style>
+  <Style Selector="Button.nav.active">
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+  <Style Selector="Button.nav.active /template/ ContentPresenter#Presenter">
+    <Setter Property="Background" Value="{DynamicResource Accent}" />
+  </Style>
+  <Style Selector="Button.nav.active:pointerover /template/ ContentPresenter#Presenter">
+    <Setter Property="Background" Value="{DynamicResource Accent}" />
+  </Style>
+  <Style Selector="Button.nav:disabled">
+    <Setter Property="Opacity" Value="0.35" />
+  </Style>
+
+  <!-- Track rows -->
+  <Style Selector="Button.row">
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="Background" Value="#222222" />
+    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="Height" Value="46" />
+    <Setter Property="Padding" Value="14,0" />
+    <Setter Property="Margin" Value="0,0,0,8" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+  <Style Selector="Button.row:pointerover /template/ ContentPresenter#Presenter">
+    <Setter Property="Background" Value="#2C2C2C" />
+  </Style>
+  <Style Selector="Button.row.current">
+    <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+  </Style>
+
+  <!-- Album track rows (right panel) -->
+  <Style Selector="Button.albumrow">
+    <Setter Property="Foreground" Value="#CFCFCF" />
+    <Setter Property="Margin" Value="22,0" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+  </Style>
+  <Style Selector="Button.albumrow:pointerover">
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+  <Style Selector="Button.albumrow.current">
+    <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+  </Style>
+
+  <!-- Icon buttons -->
+  <Style Selector="Button.icon">
+    <Setter Property="Foreground" Value="#9A9A9A" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+  <Style Selector="Button.icon:pointerover">
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+  <Style Selector="Button.icon:disabled">
+    <Setter Property="Opacity" Value="0.3" />
+  </Style>
+
+  <!-- Big orange play button -->
+  <Style Selector="Button.play">
+    <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+  <Style Selector="Button.play:pointerover">
+    <Setter Property="Foreground" Value="#FF5A22" />
+  </Style>
+
+  <!-- Pills -->
+  <Style Selector="Button.pill">
+    <Setter Property="Background" Value="#2A2A2A" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="CornerRadius" Value="18" />
+    <Setter Property="Padding" Value="18,8" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+  <Style Selector="Button.pill:pointerover /template/ ContentPresenter#Presenter">
+    <Setter Property="Background" Value="#363636" />
+  </Style>
+  <Style Selector="Button.pill.accent">
+    <Setter Property="Background" Value="{DynamicResource Accent}" />
+  </Style>
+  <Style Selector="Button.pill.accent:pointerover /template/ ContentPresenter#Presenter">
+    <Setter Property="Background" Value="#FF5A22" />
+  </Style>
+
+  <!-- Genre / preset chips -->
+  <Style Selector="Button.chip">
+    <Setter Property="Background" Value="#232323" />
+    <Setter Property="Foreground" Value="#B9B9B9" />
+    <Setter Property="CornerRadius" Value="14" />
+    <Setter Property="Padding" Value="14,6" />
+    <Setter Property="Margin" Value="0,0,8,8" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+  <Style Selector="Button.chip:pointerover /template/ ContentPresenter#Presenter">
+    <Setter Property="Background" Value="#2E2E2E" />
+  </Style>
+  <Style Selector="Button.chip.selected">
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+  <Style Selector="Button.chip.selected /template/ ContentPresenter#Presenter">
+    <Setter Property="Background" Value="{DynamicResource Accent}" />
+  </Style>
+  <Style Selector="Button.chip.selected:pointerover /template/ ContentPresenter#Presenter">
+    <Setter Property="Background" Value="{DynamicResource Accent}" />
+  </Style>
+
+
+  <!-- Toggle state for icon buttons (shuffle / repeat): orange when on -->
+  <Style Selector="Button.icon.on">
+    <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+  </Style>
+  <Style Selector="Button.icon.on:pointerover">
+    <Setter Property="Foreground" Value="#FF5A22" />
+  </Style>
+
+  <!-- Remove (x) button on playlist rows -->
+  <Style Selector="Button.icon.remove:pointerover">
+    <Setter Property="Foreground" Value="#FF6B6B" />
+  </Style>
+
+  <!-- Local file that no longer exists -->
+  <Style Selector="Button.row.missing">
+    <Setter Property="Opacity" Value="0.45" />
+  </Style>
+
+  <!-- Heart icon: outline by default, filled orange when .on -->
+  <Style Selector="Path.heart">
+    <Setter Property="Stroke" Value="#8A8A8A" />
+    <Setter Property="StrokeThickness" Value="1.5" />
+    <Setter Property="Fill" Value="Transparent" />
+  </Style>
+  <Style Selector="Path.heart.on">
+    <Setter Property="Stroke" Value="{DynamicResource Accent}" />
+    <Setter Property="Fill" Value="{DynamicResource Accent}" />
+  </Style>
+
+  <!-- Text boxes -->
+  <Style Selector="TextBox.plain">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="FontSize" Value="14" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+  <Style Selector="TextBox.plain:pointerover /template/ Border#PART_BorderElement, TextBox.plain:focus /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+  </Style>
+  <Style Selector="TextBox.field">
+    <Setter Property="Background" Value="#262626" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="BorderBrush" Value="#3A3A3A" />
+    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="FontSize" Value="13" />
+  </Style>
+  <Style Selector="TextBox.field:pointerover /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="#262626" />
+    <Setter Property="BorderBrush" Value="#4A4A4A" />
+  </Style>
+  <Style Selector="TextBox.field:focus /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="#262626" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+  </Style>
+</Styles>

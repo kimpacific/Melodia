@@ -1,0 +1,99 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Melodia.Views.SidebarView">
+  <!-- DataContext: MainWindowViewModel -->
+  <Border BorderBrush="#242424" BorderThickness="0,0,1,0">
+    <Grid RowDefinitions="76,*">
+      <StackPanel Orientation="Horizontal" Spacing="12" Margin="24,0" VerticalAlignment="Center">
+        <Image Source="avares://Melodia/Assets/logo.png" Width="32" Height="32" />
+        <TextBlock Text="Melodia" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" />
+      </StackPanel>
+
+      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="16,6,16,20" Spacing="2">
+
+          <Button Classes="flat nav" Classes.active="{Binding IsHomeActive}" Command="{Binding GoHomeCommand}">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+              <Path Data="{StaticResource IconHome}" Width="16" Height="16" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+              <TextBlock Text="Home" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <Button Classes="flat nav" Classes.active="{Binding IsExploreActive}" Command="{Binding ShowExploreNavCommand}">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+              <Path Data="{StaticResource IconExplore}" Width="16" Height="16" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+              <TextBlock Text="Explore" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <Button Classes="flat nav" Classes.active="{Binding IsEqualizerActive}" Command="{Binding ShowEqualizerNavCommand}">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+              <Path Data="{StaticResource IconEqualizer}" Width="16" Height="16" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+              <TextBlock Text="Equalizer" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+
+          <TextBlock Text="Library" FontSize="12" Foreground="#6F6F6F" Margin="14,24,0,8" />
+          <Button Classes="flat nav" Classes.active="{Binding IsSongsActive}" Command="{Binding ShowSongsNavCommand}">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+              <Path Data="{StaticResource IconNote}" Width="15" Height="15" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+              <TextBlock Text="Songs" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <Button Classes="flat nav" Classes.active="{Binding IsAlbumsActive}" Command="{Binding ShowAlbumsNavCommand}">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+              <Path Data="{StaticResource IconDisc}" Width="16" Height="16" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+              <TextBlock Text="Albums" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <Button Classes="flat nav" Classes.active="{Binding IsArtistsActive}" Command="{Binding ShowArtistsNavCommand}">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+              <Path Data="{StaticResource IconPerson}" Width="16" Height="16" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+              <TextBlock Text="Artist" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <Button Classes="flat nav" Classes.active="{Binding IsFavoritesActive}" Command="{Binding ShowFavoritesNavCommand}">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+              <Path Data="{StaticResource IconHeart}" Width="16" Height="16" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+              <TextBlock Text="Favorite" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+
+          <TextBlock Text="Playlist" FontSize="12" Foreground="#6F6F6F" Margin="14,24,0,8" />
+          <ItemsControl ItemsSource="{Binding Library.Playlists}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Button Classes="flat nav" Classes.active="{Binding IsActive}" Command="{Binding OpenCommand}">
+                  <StackPanel Orientation="Horizontal" Spacing="16">
+                    <Ellipse Width="5" Height="5" Margin="5,0,0,0" Fill="{Binding $parent[Button].Foreground}" />
+                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                  </StackPanel>
+                </Button>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+
+          <Button Classes="flat nav" Command="{Binding Library.StartNewPlaylistCommand}" IsVisible="{Binding !Library.IsCreatingPlaylist}">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+              <Path Data="{StaticResource IconPlus}" Width="14" Height="14" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+              <TextBlock Text="New Playlist" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <TextBox x:Name="NewPlaylistBox" Classes="field" Margin="0,4"
+                   Text="{Binding Library.NewPlaylistName, Mode=TwoWay}"
+                   Watermark="Playlist name, press Enter"
+                   IsVisible="{Binding Library.IsCreatingPlaylist}">
+            <TextBox.KeyBindings>
+              <KeyBinding Gesture="Enter" Command="{Binding Library.ConfirmNewPlaylistCommand}" />
+              <KeyBinding Gesture="Escape" Command="{Binding Library.CancelNewPlaylistCommand}" />
+            </TextBox.KeyBindings>
+          </TextBox>
+          <Button Classes="flat nav" Command="{Binding Library.ImportPlaylistCommand}">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+              <Path Data="{StaticResource IconUpload}" Width="14" Height="14" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+              <TextBlock Text="Import Playlist" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </Border>
+</UserControl>

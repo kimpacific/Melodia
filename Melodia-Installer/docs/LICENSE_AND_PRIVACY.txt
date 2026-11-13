@@ -1,0 +1,90 @@
+MELODIA - TERMS OF USE AND PRIVACY POLICY
+Version date: 2026-11-13
+
+
+
+--------------------------------------------------------------------
+PART 1 - TERMS OF USE
+--------------------------------------------------------------------
+
+1. License. MELODIA ("the Author") grants you a personal, non-exclusive,
+   non-transferable license to install and use Melodia on your own devices.
+
+2. Restrictions. You may not sell, sublicense or redistribute Melodia, or
+   reverse engineer it except where the law allows it regardless of this
+   clause. Third-party components keep their own licenses (see Part 3).
+
+3. Third-party content. Melodia streams music from Audius (audius.co), which
+   hosts independent artists. That content belongs to its creators and is
+   subject to Audius's own terms. Melodia does not host or own it. Local
+   audio files you add remain yours.
+
+4. No warranty. Melodia is provided "as is", without warranty of any kind.
+   Streaming depends on third-party services that can change or go offline.
+
+5. Limitation of liability. To the extent the law allows, the Author is not
+   liable for indirect or consequential damages, or for loss of data,
+   arising from the use of Melodia.
+
+6. Changes and termination. These terms may be updated in a new version of
+   the app. You may stop using Melodia and uninstall it at any time.
+
+7. Governing law. These terms are governed by the laws of RWANDA.
+
+--------------------------------------------------------------------
+PART 2 - PRIVACY POLICY
+--------------------------------------------------------------------
+
+Short version: Melodia has no accounts, no ads, no analytics and no crash
+reporting. Your library stays on your computer.
+
+1. Data stored on your computer
+   Melodia saves your playlists, favorites, equalizer settings and the paths
+   of local audio files you add in one file, library.json, in:
+       %AppData%\Melodia
+   Melodia reads the audio files you choose only to play them and to read
+   their tags (title, artist, album). This data is never sent to the Author.
+
+2. Data sent over the internet
+   To search and play music, Melodia contacts Audius servers
+   (api.audius.co and discoveryprovider.audius.co hosts). Audius receives
+   what any web request contains: your IP address, your search words, and
+   the tracks, artists and albums you request. Audius handles that data
+   under its own privacy policy: https://audius.co/legal/privacy-policy
+   Album art and audio are loaded from the same services.
+
+3. Optional API key
+   If you set the AUDIUS_BEARER_TOKEN environment variable, Melodia sends
+   that token to Audius to raise rate limits. It is read from your
+   environment and is not stored or shared by Melodia.
+
+4. No sale or sharing of personal data
+   The Author does not receive, sell or share your personal data, because
+   Melodia does not send any to the Author.
+
+5. Children
+   Melodia does not collect personal data from anyone, including children.
+
+6. Your control
+   Uninstalling Melodia lets you choose whether to delete library.json. You
+   can also delete the %AppData%\Melodia folder yourself at any time.
+
+7. Changes
+   If this policy changes, the new text ships with the new version.
+
+8. Contact
+   Privacy questions:pacifickimana@gmail.com
+
+--------------------------------------------------------------------
+PART 3 - THIRD-PARTY COMPONENTS
+--------------------------------------------------------------------
+Melodia includes open-source software under their own licenses. Verify the
+exact license of each package version you ship:
+  - Avalonia UI                  (MIT)
+  - CommunityToolkit.Mvvm        (MIT)
+  - Inter font                   (SIL Open Font License 1.1)
+  - LibVLC / LibVLCSharp         (LGPL 2.1 or later)
+  - TagLibSharp                  (LGPL 2.1)
+
+By clicking "I accept the agreement" you confirm that you have read and
+agree to the Terms of Use and the Privacy Policy above.

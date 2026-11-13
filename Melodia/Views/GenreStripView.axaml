@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Melodia.Views.GenreStripView">
+  <!-- DataContext: GenreFilterViewModel. One horizontal row of genre cards (picture + icon + name). -->
+  <ScrollViewer x:Name="Scroller" IsVisible="{Binding HasCards}"
+                HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+    <ItemsControl ItemsSource="{Binding Cards}" Margin="0,0,0,10">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal" Spacing="12" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Button Classes="flat" Width="148" Height="84" Command="{Binding SelectCommand}"
+                  ToolTip.Tip="{Binding Name}">
+            <Border CornerRadius="12" ClipToBounds="True" Background="#222222">
+              <Grid>
+                <Image Source="{Binding Image}" Stretch="UniformToFill" />
+                <!-- darkens the bottom so the name is always readable -->
+                <Border>
+                  <Border.Background>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                      <GradientStop Color="#10000000" Offset="0" />
+                      <GradientStop Color="#B0000000" Offset="1" />
+                    </LinearGradientBrush>
+                  </Border.Background>
+                </Border>
+                <!-- unselected cards are slightly dimmed -->
+                <Border Background="#44000000" IsVisible="{Binding !IsSelected}" IsHitTestVisible="False" />
+                <Path Data="{Binding Icon}" Width="22" Height="22" Stretch="Uniform" Fill="White"
+                      HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,10,0,0" />
+                <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold" Foreground="White"
+                           HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="12,0,10,9"
+                           TextTrimming="CharacterEllipsis" />
+                <!-- selected ring -->
+                <Border CornerRadius="12" BorderThickness="3" BorderBrush="{DynamicResource Accent}"
+                        IsVisible="{Binding IsSelected}" IsHitTestVisible="False" />
+              </Grid>
+            </Border>
+          </Button>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </ScrollViewer>
+</UserControl>

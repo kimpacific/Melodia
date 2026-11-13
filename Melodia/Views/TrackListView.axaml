@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:v="using:Melodia.Views"
+             x:Class="Melodia.Views.TrackListView">
+  <!-- DataContext: TrackListViewModel (search, explore, artist, album, songs, favorites, playlists) -->
+  <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*">
+    <StackPanel Grid.Row="0" Margin="0,6,0,0">
+      <TextBlock Text="{Binding Title}" FontSize="22" FontWeight="Bold" TextTrimming="CharacterEllipsis" />
+      <TextBlock Text="{Binding Subtitle}" FontSize="12" Foreground="#8E8E8E" Margin="0,4,0,0" />
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" Margin="0,16,0,14">
+      <Button Classes="flat pill accent" Content="Play all" Command="{Binding PlayAllCommand}" />
+      <Button Classes="flat pill" Content="Add songs" IsVisible="{Binding IsPlaylistPage}" Command="{Binding AddSongsCommand}" />
+      <Button Classes="flat pill" Content="Rename" IsVisible="{Binding IsPlaylistPage}" Command="{Binding StartRenameCommand}" />
+      <Button Classes="flat pill" Content="Delete playlist" IsVisible="{Binding IsPlaylistPage}" Command="{Binding DeletePlaylistCommand}" />
+    </StackPanel>
+
+    <TextBox Grid.Row="2" x:Name="RenameBox" Classes="field" MaxWidth="360" HorizontalAlignment="Left" Margin="0,0,0,14"
+             Text="{Binding RenameText, Mode=TwoWay}" Watermark="New playlist name, press Enter"
+             IsVisible="{Binding IsRenaming}">
+      <TextBox.KeyBindings>
+        <KeyBinding Gesture="Enter" Command="{Binding ConfirmRenameCommand}" />
+        <KeyBinding Gesture="Escape" Command="{Binding CancelRenameCommand}" />
+      </TextBox.KeyBindings>
+    </TextBox>
+
+    <v:GenreStripView Grid.Row="3" DataContext="{Binding Genres}" />
+
+    <TextBlock Grid.Row="4" Text="{Binding StatusMessage}" IsVisible="{Binding HasStatus}"
+               Foreground="#8E8E8E" FontSize="12.5" TextWrapping="Wrap" Margin="0,0,0,12" />
+
+    <ScrollViewer Grid.Row="5" VerticalScrollBarVisibility="Auto">
+      <ItemsControl ItemsSource="{Binding Tracks}" Margin="0,0,12,0" />
+    </ScrollViewer>
+  </Grid>
+</UserControl>

@@ -1,0 +1,85 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Melodia.Views.PlayerBarView">
+  <!-- DataContext: MainWindowViewModel (uses Player.* and Library.*) -->
+  <Grid ColumnDefinitions="272,280,*,170" Margin="44,0">
+
+    <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+      <Button Classes="flat icon" Classes.on="{Binding Player.IsShuffle}" Width="32" Height="32"
+              Command="{Binding Player.ToggleShuffleCommand}" ToolTip.Tip="Shuffle">
+        <Path Data="{StaticResource IconShuffle}" Width="20" Height="20" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+      </Button>
+      <Button Classes="flat icon" Width="32" Height="32" Command="{Binding Player.PreviousCommand}">
+        <Path Data="{StaticResource IconPrev}" Width="22" Height="22" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+      </Button>
+      <Button Classes="flat play" Width="36" Height="36" Command="{Binding Player.TogglePlayCommand}">
+        <Panel>
+          <Path Data="{StaticResource IconPlay}" Width="28" Height="28" Stretch="Uniform"
+                Fill="{Binding $parent[Button].Foreground}" IsVisible="{Binding !Player.IsPlaying}" />
+          <Path Data="{StaticResource IconPause}" Width="26" Height="26" Stretch="Uniform"
+                Fill="{Binding $parent[Button].Foreground}" IsVisible="{Binding Player.IsPlaying}" />
+        </Panel>
+      </Button>
+      <Button Classes="flat icon" Width="32" Height="32" Command="{Binding Player.NextCommand}">
+        <Path Data="{StaticResource IconNext}" Width="22" Height="22" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+      </Button>
+      <Button Classes="flat icon" Classes.on="{Binding Player.IsRepeatActive}" Width="32" Height="32"
+              Command="{Binding Player.CycleRepeatCommand}" ToolTip.Tip="{Binding Player.RepeatTooltip}">
+        <Panel>
+          <Path Data="{StaticResource IconRepeat}" Width="20" Height="20" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+          <TextBlock Text="1" FontSize="8" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Foreground="{Binding $parent[Button].Foreground}" IsVisible="{Binding Player.IsRepeatOne}" />
+        </Panel>
+      </Button>
+    </StackPanel>
+
+    <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto,Auto" VerticalAlignment="Center">
+      <Border Width="46" Height="46" CornerRadius="4" ClipToBounds="True" Background="#3A3A3A">
+        <Image Source="{Binding Player.NowCover}" Stretch="UniformToFill" />
+      </Border>
+      <StackPanel Grid.Column="1" Margin="16,0,8,0" VerticalAlignment="Center" Spacing="2">
+        <TextBlock Text="{Binding Player.NowTitle}" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+        <TextBlock Text="{Binding Player.NowSubtitle}" FontSize="11" Foreground="#8E8E8E" TextTrimming="CharacterEllipsis"
+                   ToolTip.Tip="{Binding Player.NowSubtitle}" />
+      </StackPanel>
+      <Button Grid.Column="2" Classes="flat icon" Width="28" Height="28" Command="{Binding Player.ToggleNowFavoriteCommand}">
+        <Path Classes="heart" Classes.on="{Binding Player.IsNowFavorite}" Data="{StaticResource IconHeart}"
+              Width="16" Height="16" Stretch="Uniform" />
+      </Button>
+      <Panel Grid.Column="3">
+        <Button x:Name="AddToPlaylistButton" Classes="flat icon" Width="28" Height="28"
+                Command="{Binding Library.OpenPlaylistPickerCommand}" ToolTip.Tip="Add to playlist">
+          <Path Data="{StaticResource IconPlus}" Width="16" Height="16" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+        </Button>
+        <Popup IsOpen="{Binding Library.IsPlaylistPickerOpen, Mode=TwoWay}"
+               PlacementTarget="{Binding #AddToPlaylistButton}"
+               Placement="Top" IsLightDismissEnabled="True">
+          <Border Background="#2B2B2B" BorderBrush="#3A3A3A" BorderThickness="1" CornerRadius="10" Padding="8" MinWidth="210">
+            <StackPanel Spacing="4">
+              <TextBlock Text="Add current song to…" FontSize="11" Foreground="#8E8E8E" Margin="8,2" />
+              <ItemsControl ItemsSource="{Binding Library.Playlists}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Button Classes="flat nav" Content="{Binding Name}" Command="{Binding AddCurrentCommand}" />
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+        </Popup>
+      </Panel>
+    </Grid>
+
+    <Grid Grid.Column="2" ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center" Margin="12,0">
+      <TextBlock Text="{Binding Player.ElapsedText}" FontSize="11" Foreground="#CFCFCF" MinWidth="34" VerticalAlignment="Center" />
+      <Slider x:Name="ProgressSlider" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Player.Progress}"
+              Margin="10,0" VerticalAlignment="Center" />
+      <TextBlock Grid.Column="2" Text="{Binding Player.TotalText}" FontSize="11" Foreground="#CFCFCF" MinWidth="34" VerticalAlignment="Center" />
+    </Grid>
+
+    <Grid Grid.Column="3" ColumnDefinitions="Auto,*" VerticalAlignment="Center" Margin="12,0,0,0">
+      <Path Data="{StaticResource IconVolume}" Width="18" Height="18" Stretch="Uniform" Fill="#9A9A9A" VerticalAlignment="Center" />
+      <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Player.Volume}" Margin="10,0,0,0" VerticalAlignment="Center" />
+    </Grid>
+  </Grid>
+</UserControl>

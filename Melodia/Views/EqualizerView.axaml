@@ -1,0 +1,61 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Melodia.Views.EqualizerView">
+  <!-- DataContext: EqualizerViewModel -->
+  <UserControl.Resources>
+    <DataTemplate x:Key="ChipItem">
+      <Button Classes="flat chip" Classes.selected="{Binding IsSelected}" Content="{Binding Name}"
+              Command="{Binding SelectCommand}" />
+    </DataTemplate>
+  </UserControl.Resources>
+
+  <Grid RowDefinitions="Auto,Auto,Auto,*">
+    <StackPanel Grid.Row="0" Margin="0,6,0,0">
+      <TextBlock Text="Equalizer" FontSize="22" FontWeight="Bold" />
+      <TextBlock Text="10-band equalizer, applied live to whatever is playing" FontSize="12"
+                 Foreground="#8E8E8E" Margin="0,4,0,0" />
+    </StackPanel>
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" Margin="0,16,0,14">
+      <Button Classes="flat pill" Classes.accent="{Binding Enabled}" Content="{Binding ToggleText}"
+              Command="{Binding ToggleCommand}" />
+      <Button Classes="flat pill" Content="Reset" Command="{Binding ResetCommand}" />
+      <TextBlock Text="{Binding PresetText}" Foreground="#8E8E8E" FontSize="12"
+                 VerticalAlignment="Center" Margin="8,0,0,0" />
+    </StackPanel>
+    <ItemsControl Grid.Row="2" ItemsSource="{Binding PresetChips}" ItemTemplate="{StaticResource ChipItem}" Margin="0,0,0,8">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <WrapPanel />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+    </ItemsControl>
+    <Border Grid.Row="3" Background="#1C1C1C" CornerRadius="18" Padding="28,22" VerticalAlignment="Top">
+      <StackPanel Spacing="18">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          <TextBlock Text="Preamp" FontSize="12" Foreground="#CFCFCF" VerticalAlignment="Center" Width="60" />
+          <Slider Grid.Column="1" Minimum="-12" Maximum="12" Value="{Binding Preamp}"
+                  TickFrequency="0.5" IsSnapToTickEnabled="True" VerticalAlignment="Center" Margin="8,0" />
+          <TextBlock Grid.Column="2" Text="{Binding PreampText}" FontSize="12" Foreground="#CFCFCF"
+                     VerticalAlignment="Center" MinWidth="56" TextAlignment="Right" />
+        </Grid>
+        <ItemsControl ItemsSource="{Binding Bands}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <UniformGrid Rows="1" Columns="10" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Spacing="10" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding GainText}" FontSize="11" Foreground="#CFCFCF" HorizontalAlignment="Center" />
+                <Slider Orientation="Vertical" Minimum="-12" Maximum="12" Value="{Binding Gain}"
+                        TickFrequency="0.5" IsSnapToTickEnabled="True" Height="220" HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding Label}" FontSize="11" Foreground="#8E8E8E" HorizontalAlignment="Center" />
+              </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </Border>
+  </Grid>
+</UserControl>

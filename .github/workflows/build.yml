@@ -1,0 +1,171 @@
+name: Build, test and release
+
+# Runs on every push to main, on pull requests, and when you push a version tag like v1.0.0.
+# A tag push also publishes a GitHub Release with the installer attached.
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  # Official Inno Setup 6.x installer (Melodia.iss needs 6.6 or newer).
+  # To build with Inno Setup 7 instead, replace this with the 7.x installer URL
+  # from https://jrsoftware.org/isdl.php
+  INNO_URL: https://jrsoftware.org/download.php/is.exe
+
+jobs:
+  test:
+    name: Build and test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Restore
+        run: dotnet restore Melodia.Tests/Melodia.Tests.csproj
+
+      - name: Build
+        run: dotnet build Melodia.Tests/Melodia.Tests.csproj -c Release --no-restore
+
+      - name: Test
+        run: dotnet test Melodia.Tests/Melodia.Tests.csproj -c Release --no-build --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: "**/test-results.trx"
+          if-no-files-found: ignore
+
+  installer:
+    name: Build Windows installer
+    needs: test
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Work out the version
+        id: ver
+        shell: pwsh
+        run: |
+          if ($env:GITHUB_REF -like 'refs/tags/v*') {
+            $v = $env:GITHUB_REF_NAME.Substring(1)
+            if ($v -notmatch '^\d+\.\d+\.\d+$') {
+              throw "Tag '$env:GITHUB_REF_NAME' must look like v1.2.3 (numbers only)."
+            }
+            $strict = 'true'
+          } else {
+            $v = "0.0.$env:GITHUB_RUN_NUMBER"
+            $strict = 'false'
+          }
+          "version=$v" >> $env:GITHUB_OUTPUT
+          "strict=$strict" >> $env:GITHUB_OUTPUT
+          Write-Host "Version: $v (strict placeholder check: $strict)"
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          $exe = Join-Path $env:RUNNER_TEMP 'innosetup.exe'
+          Invoke-WebRequest -Uri $env:INNO_URL -OutFile $exe -UseBasicParsing
+          Start-Process -FilePath $exe -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-','/DIR=C:\InnoSetup' -Wait
+          if (-not (Test-Path 'C:\InnoSetup\ISCC.exe')) { throw 'Inno Setup did not install to C:\InnoSetup' }
+          'C:\InnoSetup' >> $env:GITHUB_PATH
+
+      - name: Build installer
+        shell: pwsh
+        working-directory: Melodia-Installer
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+          STRICT: ${{ steps.ver.outputs.strict }}
+        run: |
+          # Tag builds fail if the license/publisher placeholders are still there.
+          # Other builds (pull requests, main) pass -AllowPlaceholders so CI is not blocked.
+          $psArgs = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', './build.ps1', '-Version', $env:VERSION)
+          if ($env:STRICT -ne 'true') { $psArgs += '-AllowPlaceholders' }
+          pwsh @psArgs
+          if ($LASTEXITCODE -ne 0) { throw "build.ps1 failed with exit code $LASTEXITCODE" }
+
+      # Code signing goes here once you have a certificate (see the publishing guide, section 6).
+
+      - name: Compute SHA256
+        shell: pwsh
+        working-directory: Melodia-Installer/output
+        run: |
+          $f = Get-ChildItem Melodia-Setup-*.exe | Select-Object -First 1
+          if (-not $f) { throw 'No installer found in output' }
+          $h = (Get-FileHash $f.FullName -Algorithm SHA256).Hash.ToLower()
+          "$h  $($f.Name)" | Out-File -Encoding ascii "$($f.Name).sha256"
+          Write-Host "$h  $($f.Name)"
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: Melodia-Setup-${{ steps.ver.outputs.version }}
+          path: |
+            Melodia-Installer/output/Melodia-Setup-*.exe
+            Melodia-Installer/output/*.sha256
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: installer
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Melodia-Setup-${{ needs.installer.outputs.version }}
+          path: dist
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.installer.outputs.version }}
+        run: |
+          {
+            echo "## Melodia $VERSION"
+            echo
+            echo "Windows 10 or later, 64-bit. Download and run the installer below."
+            echo
+            echo "### SHA256"
+            echo '```'
+            cat dist/*.sha256
+            echo '```'
+            echo
+            echo "If Windows SmartScreen shows a warning, choose More info, then Run anyway."
+          } > notes.md
+          gh release create "$GITHUB_REF_NAME" dist/*.exe dist/*.sha256 \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Melodia $VERSION" \
+            --notes-file notes.md \
+            --verify-tag

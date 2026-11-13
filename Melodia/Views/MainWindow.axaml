@@ -1,0 +1,80 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Melodia.ViewModels"
+        xmlns:v="using:Melodia.Views"
+        x:Class="Melodia.Views.MainWindow"
+        Title="Melodia"
+        Icon="avares://Melodia/Assets/logo.ico"
+        Width="1240" Height="760" MinWidth="1080" MinHeight="680"
+        Background="#262626"
+        WindowStartupLocation="CenterScreen">
+
+  <Grid RowDefinitions="*,92">
+
+    <!-- ================= MAIN AREA ================= -->
+    <Border Grid.Row="0" Background="#141414" CornerRadius="0,0,28,28" ClipToBounds="True">
+      <Grid ColumnDefinitions="224,*">
+
+        <v:SidebarView Grid.Column="0" />
+
+        <!-- CONTENT -->
+        <Grid Grid.Column="1" RowDefinitions="80,*">
+
+          <!-- top bar -->
+          <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,*,Auto" Margin="32,0">
+            <Button Classes="flat icon" Width="36" Height="36" Command="{Binding GoBackCommand}">
+              <Path Data="{StaticResource IconChevronLeft}" Width="22" Height="22" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+            </Button>
+            <Button Grid.Column="1" Classes="flat icon" Width="36" Height="36" Command="{Binding GoForwardCommand}">
+              <Path Data="{StaticResource IconChevronRight}" Width="22" Height="22" Stretch="Uniform" Fill="{Binding $parent[Button].Foreground}" />
+            </Button>
+            <Grid Grid.Column="2" ColumnDefinitions="Auto,*" Margin="24,0" MaxWidth="460" HorizontalAlignment="Left" VerticalAlignment="Center">
+              <Path Data="{StaticResource IconSearch}" Width="18" Height="18" Stretch="Uniform" Fill="#9A9A9A" VerticalAlignment="Center" />
+              <TextBox Grid.Column="1" Classes="plain" Margin="8,0,0,0" Width="380"
+                       Text="{Binding SearchText, Mode=TwoWay}" Watermark="Search music">
+                <TextBox.KeyBindings>
+                  <KeyBinding Gesture="Enter" Command="{Binding SearchCommand}" />
+                </TextBox.KeyBindings>
+              </TextBox>
+            </Grid>
+            <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="24" VerticalAlignment="Center">
+              <Path Data="{StaticResource IconBell}" Width="18" Height="18" Stretch="Uniform" Fill="#9A9A9A" />
+              <StackPanel Orientation="Horizontal" Spacing="3" VerticalAlignment="Center">
+                <Ellipse Width="6" Height="6" Stroke="#9A9A9A" StrokeThickness="1" />
+                <Ellipse Width="6" Height="6" Stroke="#9A9A9A" StrokeThickness="1" />
+                <Ellipse Width="6" Height="6" Stroke="#9A9A9A" StrokeThickness="1" />
+              </StackPanel>
+            </StackPanel>
+          </Grid>
+
+          <!-- body: current page + (optional) albums panel -->
+          <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="32,0,32,26">
+
+            <Grid RowDefinitions="Auto,*">
+              <TextBlock Text="{Binding Notice}" IsVisible="{Binding HasNotice}"
+                         Foreground="#E8A15C" FontSize="12.5" TextWrapping="Wrap" Margin="0,0,0,10" />
+
+              <!-- the page view is picked from the page view model's type -->
+              <ContentControl Grid.Row="1" Content="{Binding CurrentPage}">
+                <ContentControl.DataTemplates>
+                  <DataTemplate DataType="vm:HomeViewModel"><v:HomeView /></DataTemplate>
+                  <DataTemplate DataType="vm:TrackListViewModel"><v:TrackListView /></DataTemplate>
+                  <DataTemplate DataType="vm:ArtistsViewModel"><v:ArtistsView /></DataTemplate>
+                  <DataTemplate DataType="vm:AlbumsViewModel"><v:AlbumsView /></DataTemplate>
+                  <DataTemplate DataType="vm:EqualizerViewModel"><v:EqualizerView /></DataTemplate>
+                </ContentControl.DataTemplates>
+              </ContentControl>
+            </Grid>
+
+            <Panel Grid.Column="1" IsVisible="{Binding ShowAlbumPanel}">
+              <v:AlbumPanelView DataContext="{Binding AlbumPanel}" Width="340" Margin="28,0,0,0" />
+            </Panel>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Border>
+
+    <!-- ================= PLAYER BAR ================= -->
+    <v:PlayerBarView Grid.Row="1" />
+  </Grid>
+</Window>
