@@ -23,7 +23,7 @@ env:
   # Official Inno Setup 6.x installer (Melodia.iss needs 6.6 or newer).
   # To build with Inno Setup 7 instead, replace this with the 7.x installer URL
   # from https://jrsoftware.org/isdl.php
-  INNO_URL: https://jrsoftware.org/download.php/is.exe
+  INNO_URL: https://www.jrsoftware.org/download.php/is.exe?site=1
 
 jobs:
   test:
@@ -93,11 +93,31 @@ jobs:
       - name: Install Inno Setup
         shell: pwsh
         run: |
+          $dest = 'C:\InnoSetup'
           $exe = Join-Path $env:RUNNER_TEMP 'innosetup.exe'
-          Invoke-WebRequest -Uri $env:INNO_URL -OutFile $exe -UseBasicParsing
-          Start-Process -FilePath $exe -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-','/DIR=C:\InnoSetup' -Wait
-          if (-not (Test-Path 'C:\InnoSetup\ISCC.exe')) { throw 'Inno Setup did not install to C:\InnoSetup' }
-          'C:\InnoSetup' >> $env:GITHUB_PATH
+          $ok = $false
+          try {
+            Invoke-WebRequest -Uri $env:INNO_URL -OutFile $exe -UseBasicParsing -MaximumRedirection 10
+            $size = (Get-Item $exe).Length
+            $head = [System.IO.File]::ReadAllBytes($exe)[0..1]
+            Write-Host "Downloaded $size bytes"
+            # A real Windows installer is over 1 MB and starts with the letters 'MZ'
+            if ($size -gt 1MB -and $head[0] -eq 0x4D -and $head[1] -eq 0x5A) {
+              Start-Process -FilePath $exe -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-',"/DIR=$dest" -Wait
+              $ok = Test-Path "$dest\ISCC.exe"
+            } else {
+              Write-Host 'Download is not a valid installer (probably a web page).'
+            }
+          } catch {
+            Write-Host "Direct download failed: $_"
+          }
+          if (-not $ok) {
+            Write-Host 'Falling back to Chocolatey'
+            choco install innosetup -y --no-progress
+            $dest = "${env:ProgramFiles(x86)}\Inno Setup 6"
+            if (-not (Test-Path "$dest\ISCC.exe")) { throw 'Inno Setup could not be installed' }
+          }
+          $dest >> $env:GITHUB_PATH
 
       - name: Build installer
         shell: pwsh
